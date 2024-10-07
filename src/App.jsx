@@ -67,8 +67,8 @@ const App = () => {
 
   return (
     <div
-      className="bg-[url('./assets/images/bg-mobile-light.jpg')]
-          bg-no-repeat bg-contain min-h-screen bg-gray-300"
+      className="bg-[url('./assets/images/bg-mobile-light.jpg')] dark:bg-[url('./assets/images/bg-mobile-dark.jpg')]
+          bg-no-repeat bg-contain min-h-screen bg-gray-300 dark:bg-gray-900"
     >
       <Header />
 
@@ -92,7 +92,7 @@ const App = () => {
         />
       </main>
 
-      <footer className=" text-center mt-8">
+      <footer className=" text-center mt-8 dark:text-gray-400">
         Drag and drop to reader list
       </footer>
     </div>
