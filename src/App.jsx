@@ -3,7 +3,7 @@ import TodoCreate from './components/TodoCreate';
 import TodoList from './components/TodoList';
 import TodoComputed from './components/TodoComputed';
 import TodoFilter from './components/TodoFilter';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 const initialStateTodos = [
   { id: 1, title: 'Complete online Javascript Curse', completed: true },
@@ -19,6 +19,10 @@ const initialStateTodos = [
 
 const App = () => {
   const [todos, setTodos] = useState(initialStateTodos);
+
+  useEffect(() => {
+    localStorage.setItem('todos', JSON.stringify(todos));
+  }, [todos]);
 
   const createTodo = (title) => {
     const newTodo = {
@@ -68,11 +72,14 @@ const App = () => {
   return (
     <div
       className="bg-[url('./assets/images/bg-mobile-light.jpg')] dark:bg-[url('./assets/images/bg-mobile-dark.jpg')]
-          bg-no-repeat bg-contain min-h-screen bg-gray-300 dark:bg-gray-900"
+          bg-no-repeat bg-contain min-h-screen bg-gray-300 dark:bg-gray-900
+          md:bg-[url('./assets/images/bg-desktop-light.jpg')]
+          md:dark:bg-[url('./assets/images/bg-desktop-dark.jpg')]
+          "
     >
       <Header />
 
-      <main className="container mx-auto px-4 mt-8">
+      <main className="container mx-auto px-4 mt-8 md:max-w-xl">
         <TodoCreate createTodo={createTodo} />
 
         <TodoList
