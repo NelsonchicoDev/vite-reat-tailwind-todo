@@ -1,3 +1,5 @@
+import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
+
 import Header from './components/Header';
 import TodoCreate from './components/TodoCreate';
 import TodoList from './components/TodoList';
@@ -5,17 +7,27 @@ import TodoComputed from './components/TodoComputed';
 import TodoFilter from './components/TodoFilter';
 import { useEffect, useState } from 'react';
 
-const initialStateTodos = [
-  { id: 1, title: 'Complete online Javascript Curse', completed: true },
-  { id: 2, title: 'Goto to the gym', completed: false },
-  { id: 3, title: '10 minutes meditation', completed: false },
-  { id: 4, title: 'Pick up groceries', completed: false },
-  {
-    id: 5,
-    title: 'Complete todo and app on Frontend Mentor',
-    completed: false,
-  },
-];
+// const initialStateTodos = [
+//   { id: 1, title: 'Complete online Javascript Curse', completed: true },
+//   { id: 2, title: 'Goto to the gym', completed: false },
+//   { id: 3, title: '10 minutes meditation', completed: false },
+//   { id: 4, title: 'Pick up groceries', completed: false },
+//   {
+//     id: 5,
+//     title: 'Complete todo and app on Frontend Mentor',
+//     completed: false,
+//   },
+// ];
+
+const initialStateTodos = JSON.parse(localStorage.getItem('todos')) || [];
+
+const reorder = (list, startIndex, endIndex) => {
+  const result = [...list];
+  const [removed] = result.splice(startIndex, 1);
+  result.splice(endIndex, 0, removed);
+
+  return result;
+};
 
 const App = () => {
   const [todos, setTodos] = useState(initialStateTodos);
@@ -69,6 +81,20 @@ const App = () => {
     }
   };
 
+  const handleDragEnd = (result) => {
+    const { destination, source } = result;
+    if (!destination) return;
+    if (
+      source.index === destination.index &&
+      source.droppableId === destination.droppableId
+    )
+      return;
+
+    setTodos((prevTasks) =>
+      reorder(prevTasks, source.index, destination.index)
+    );
+  };
+
   return (
     <div
       className="bg-[url('./assets/images/bg-mobile-light.jpg')] dark:bg-[url('./assets/images/bg-mobile-dark.jpg')]
@@ -82,12 +108,13 @@ const App = () => {
       <main className="container mx-auto px-4 mt-8 md:max-w-xl">
         <TodoCreate createTodo={createTodo} />
 
-        <TodoList
-          todos={filteredTodos()}
-          updateTodo={updateTodo}
-          removeTodo={removeTodo}
-        />
-
+        <DragDropContext onDragEnd={handleDragEnd}>
+          <TodoList
+            todos={filteredTodos()}
+            updateTodo={updateTodo}
+            removeTodo={removeTodo}
+          />
+        </DragDropContext>
         <TodoComputed
           computedItemsLeft={computedItemsLeft}
           clearCompleted={clearCompleted}
